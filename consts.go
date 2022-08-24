@@ -4,6 +4,7 @@ import "time"
 
 const (
 	configJSONPath                = "config.json"
+	gameSessionNameLength         = 12
 	dataProviderConnectTimeout    = 5 * time.Second
 	sendChatMessagesBufferSize    = 200
 	limitBotChatOneMessageTimeout = time.Millisecond * 1100

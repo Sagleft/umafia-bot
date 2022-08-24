@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"log"
 	"reflect"
+	"strings"
 
+	swissknife "github.com/Sagleft/swiss-knife"
 	utopiago "github.com/Sagleft/utopialib-go"
 )
 
@@ -40,6 +42,7 @@ func (b *bot) onChannelMessage(m utopiago.ChannelMessage) {
 
 func (b *bot) startNewGameSession(channelID string) {
 	b.Sessions[channelID] = game.NewSession(game.SessionData{
+		Name:      strings.ToUpper(swissknife.GetRandomString(gameSessionNameLength)),
 		ChannelID: channelID,
 	})
 	b.Sessions[channelID].Start()

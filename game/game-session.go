@@ -7,14 +7,16 @@ import (
 )
 
 func NewSession(data SessionData) *Session {
-	return &Session{
+	s := &Session{
 		FSM:  gofsm.NewFSM(),
 		Data: data,
 	}
+
+	s.initStates()
+	return s
 }
 
-func (g *Session) Start() {
-	// TODO
-
-	fmt.Println("game session started in channel " + g.Data.ChannelID)
+func (s *Session) Start() {
+	s.changeState(defaultState)
+	fmt.Println("game session started in channel " + s.Data.ChannelID)
 }
