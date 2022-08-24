@@ -3,9 +3,8 @@ module bot
 go 1.18
 
 require (
-	github.com/Sagleft/uchatbot-engine v1.0.0
-	github.com/Sagleft/utopialib-go v1.5.4
-	github.com/superoo7/go-gecko v1.0.0
+	github.com/Sagleft/uchatbot-engine v1.0.1
+	github.com/Sagleft/utopialib-go v1.5.5
 )
 
 require (
