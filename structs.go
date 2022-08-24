@@ -28,7 +28,8 @@ type botWorker struct {
 }
 
 type channelWorkers struct {
-	ChatWorker *botWorker
+	Chat           *botWorker
+	RemoveMessages *botWorker
 }
 
 type config struct {
@@ -36,7 +37,12 @@ type config struct {
 	Chats  []uchatbot.Chat       `json:"chats"`
 }
 
-type chatMessage struct {
+type postChatMessageTask struct {
 	Text      string
 	ChannelID string
+}
+
+type removeChatMessageTask struct {
+	ChannelID string
+	MessageID int64
 }

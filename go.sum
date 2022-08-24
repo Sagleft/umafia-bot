@@ -1,9 +1,9 @@
 github.com/Sagleft/swiss-knife v1.0.7 h1:pHonh6XqBvxCpAWRfHXS5AEX1jjRgaEDh6sa64XjR/U=
 github.com/Sagleft/swiss-knife v1.0.7/go.mod h1:qPlA/Y53sIYAyJI+E3StPw3vNSy9rzxAeh03oemFM9g=
-github.com/Sagleft/uchatbot-engine v1.0.2 h1:YHrT9PUiATTUd5avYFg9I6rXwVdbKb1YcDojMycHHI8=
-github.com/Sagleft/uchatbot-engine v1.0.2/go.mod h1:oyU1HVYU+P/8UKDX5gGTSGrb1aWMCqV0lniV+9wm4/8=
-github.com/Sagleft/utopialib-go v1.5.6 h1:ZCpyhVXNLgmRLoqCA6uJi3M4f/klqekZERoal8gZY3I=
-github.com/Sagleft/utopialib-go v1.5.6/go.mod h1:q7vYYHmin43t5xiXhbZqjRlCOYBVi5DqVSaM9+Fo9u0=
+github.com/Sagleft/uchatbot-engine v1.0.3 h1:FId7ZZwKt2JopI6MQ9rsalSlbViuLetunnmy/aehy24=
+github.com/Sagleft/uchatbot-engine v1.0.3/go.mod h1:p22iLtV0gnvnHYE3J3Xhzinra3d59XtKIaf6/xLnOu0=
+github.com/Sagleft/utopialib-go v1.5.7 h1:naUU6dljFu5nKyPcXpVa364+YP0BcsioMsh+8VGUu20=
+github.com/Sagleft/utopialib-go v1.5.7/go.mod h1:q7vYYHmin43t5xiXhbZqjRlCOYBVi5DqVSaM9+Fo9u0=
 github.com/SolarLune/gofsm v0.0.0-20180925135138-d8db16fac19c h1:NltcWQHf+o4UwxqxerC5vXt7VjNJD05UIGUFqQRK4/E=
 github.com/SolarLune/gofsm v0.0.0-20180925135138-d8db16fac19c/go.mod h1:LHiSM7NWnONU+TiRGp5oN7A+HHD1Tq9HUQmKHxkvtjg=
 github.com/beefsack/go-rate v0.0.0-20220214233405-116f4ca011a0 h1:0b2vaepXIfMsG++IsjHiI2p4bxALD1Y2nQKGMR5zDQM=

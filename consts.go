@@ -7,7 +7,10 @@ const (
 	gameSessionNameLength         = 12
 	dataProviderConnectTimeout    = 5 * time.Second
 	sendChatMessagesBufferSize    = 200
+	deleteMessagesBufferSize      = 100
 	limitBotChatOneMessageTimeout = time.Millisecond * 1100
+	limitChatMessageDeleteTimeout = time.Millisecond * 150
+	maxMessagesInOneDelete        = 15
 	dayDiscussionTime             = time.Second * 15
 
 	botStartedMessage  = "Бот запущен\n[spy]"

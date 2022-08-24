@@ -11,6 +11,19 @@ import (
 	utopiago "github.com/Sagleft/utopialib-go"
 )
 
+func (b *bot) removeBotMessages() error {
+	for _, chat := range b.Config.Chats {
+		messages, err := b.Config.Utopia.GetChannelMessages(chat.ID, 0, maxMessagesInOneDelete)
+		if err != nil {
+			return err
+		}
+		for i := 0; i < len(messages); i++ {
+			b.removeChatMessage(chat.ID, messages[i].ID)
+		}
+	}
+	return nil
+}
+
 // when a user in the personal contacts list sent a message
 func (b *bot) onContactMessage(m utopiago.InstantMessage) {
 	fmt.Println("[spy]")
@@ -47,7 +60,7 @@ func (b *bot) onPrivateChannelMessage(m utopiago.WsChannelMessage) {
 
 // add message to chat queue
 func (b *bot) sendChatMessage(channelID, message string) {
-	b.Workers.ChatWorker.W.AddEvent(chatMessage{
+	b.Workers.Chat.W.AddEvent(postChatMessageTask{
 		Text:      message,
 		ChannelID: channelID,
 	})
@@ -55,17 +68,43 @@ func (b *bot) sendChatMessage(channelID, message string) {
 
 func (b *bot) sendChatMessageFromQueue(event interface{}) {
 	// get message
-	message, isConvertable := event.(chatMessage)
+	message, isConvertable := event.(postChatMessageTask)
 	if !isConvertable {
 		log.Println("invalid event received in channel worker: " + reflect.TypeOf(event).String())
 		return
 	}
 
 	// sync messages rate
-	b.Workers.ChatWorker.R.Wait()
+	b.Workers.Chat.R.Wait()
 
 	// send channel message
 	_, err := b.Config.Utopia.SendChannelMessage(message.ChannelID, message.Text)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+// add message to delete queue
+func (b *bot) removeChatMessage(channelID string, messageID int64) {
+	b.Workers.RemoveMessages.W.AddEvent(removeChatMessageTask{
+		ChannelID: channelID,
+		MessageID: messageID,
+	})
+}
+
+func (b *bot) removeChatMessageFromQueue(event interface{}) {
+	// get message
+	message, isConvertable := event.(removeChatMessageTask)
+	if !isConvertable {
+		log.Println("invalid event received in remove-messages worker: " + reflect.TypeOf(event).String())
+		return
+	}
+
+	// sync messages rate
+	b.Workers.RemoveMessages.R.Wait()
+
+	// remove message
+	err := b.Config.Utopia.RemoveChannelMessage(message.ChannelID, message.MessageID)
 	if err != nil {
 		log.Println(err)
 	}

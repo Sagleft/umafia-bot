@@ -80,10 +80,15 @@ func (b *bot) onError(err error) {
 }
 
 func (b *bot) initChannelWorkers() error {
-	b.Workers.ChatWorker = b.getChannelWorker(getChannelWorkerTask{
+	b.Workers.Chat = b.getChannelWorker(getChannelWorkerTask{
 		RateLimit:  limitBotChatOneMessageTimeout,
 		Callback:   b.sendChatMessageFromQueue,
 		BufferSize: sendChatMessagesBufferSize,
+	})
+	b.Workers.RemoveMessages = b.getChannelWorker(getChannelWorkerTask{
+		RateLimit:  limitChatMessageDeleteTimeout,
+		Callback:   b.sendChatMessageFromQueue,
+		BufferSize: deleteMessagesBufferSize,
 	})
 	return nil
 }
