@@ -1,0 +1,13 @@
+{
+    "utopia": {
+        "protocol": "http",
+        "token": "",
+        "host": "127.0.0.1",
+        "port": 22000,
+        "wsport": 25000
+    },
+    "chats": [{
+        "id": "834C48B4A08988B53255003FB84A8D0B",
+        "password": ""
+    }]
+}
