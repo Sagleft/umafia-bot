@@ -22,7 +22,7 @@ func (b *bot) isGameSessionAlreadyStarted(channelID string) bool {
 }
 
 // when in one of the chats (channels) someone sent a message
-func (b *bot) onChannelMessage(m utopiago.ChannelMessage) {
+func (b *bot) onChannelMessage(m utopiago.WsChannelMessage) {
 	if m.Text == "" {
 		return
 	}
@@ -41,7 +41,7 @@ func (b *bot) onChannelMessage(m utopiago.ChannelMessage) {
 }
 
 // when someone sends a message in a chat private room section
-func (b *bot) onPrivateChannelMessage(m utopiago.ChannelMessage) {
+func (b *bot) onPrivateChannelMessage(m utopiago.WsChannelMessage) {
 	// TODO
 }
 

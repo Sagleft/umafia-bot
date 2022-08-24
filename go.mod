@@ -4,8 +4,8 @@ go 1.18
 
 require (
 	github.com/Sagleft/swiss-knife v1.0.7
-	github.com/Sagleft/uchatbot-engine v1.0.1
-	github.com/Sagleft/utopialib-go v1.5.5
+	github.com/Sagleft/uchatbot-engine v1.0.2
+	github.com/Sagleft/utopialib-go v1.5.6
 	github.com/SolarLune/gofsm v0.0.0-20180925135138-d8db16fac19c
 	github.com/beefsack/go-rate v0.0.0-20220214233405-116f4ca011a0
 )
