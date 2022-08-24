@@ -40,14 +40,6 @@ func (b *bot) onChannelMessage(m utopiago.ChannelMessage) {
 	fmt.Println(m.Text)
 }
 
-func (b *bot) startNewGameSession(channelID string) {
-	b.Sessions[channelID] = game.NewSession(game.SessionData{
-		Name:      strings.ToUpper(swissknife.GetRandomString(gameSessionNameLength)),
-		ChannelID: channelID,
-	})
-	b.Sessions[channelID].Start()
-}
-
 // when someone sends a message in a chat private room section
 func (b *bot) onPrivateChannelMessage(m utopiago.ChannelMessage) {
 	// TODO
@@ -77,4 +69,15 @@ func (b *bot) sendChatMessageFromQueue(event interface{}) {
 	if err != nil {
 		log.Println(err)
 	}
+}
+
+func (b *bot) startNewGameSession(channelID string) {
+	b.Sessions[channelID] = game.NewSession(game.SessionData{
+		Name:      strings.ToUpper(swissknife.GetRandomString(gameSessionNameLength)),
+		ChannelID: channelID,
+		Callbacks: game.SessionCallbacks{
+			SendGameStartMessage: b.onGameSessionStarted,
+		},
+	})
+	b.Sessions[channelID].Start()
 }

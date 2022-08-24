@@ -7,7 +7,7 @@ import (
 )
 
 func (s *Session) initStates() {
-	s.FSM.Register(stateInit, gofsm.State{Update: s.onInit})
+	s.FSM.Register(stateInit, gofsm.State{Enter: s.onEnterInit, Update: s.onInit})
 	s.FSM.Register(stateDay, gofsm.State{Update: s.onDay})
 	s.FSM.Register(stateNight, gofsm.State{Update: s.onNight})
 	s.FSM.Register(stateVote, gofsm.State{Update: s.onVote})
@@ -20,13 +20,35 @@ func (s *Session) changeState(newState string) {
 	s.FSM.Change(newState)
 }
 
-func (s *Session) onInit() {}
+func (s *Session) onEnterInit() {
+	s.FSM.Update()
+}
+
+func (s *Session) onInit() {
+	s.Data.Callbacks.SendGameStartMessage(&s.Data)
+}
+
+func (s *Session) onEnterDay() {
+	s.FSM.Update()
+}
 
 func (s *Session) onDay() {}
 
+func (s *Session) onEnterVote() {
+	s.FSM.Update()
+}
+
 func (s *Session) onVote() {}
 
+func (s *Session) onEnterNight() {
+	s.FSM.Update()
+}
+
 func (s *Session) onNight() {}
+
+func (s *Session) onEnterFinish() {
+	s.FSM.Update()
+}
 
 func (s *Session) onFinish() {}
 

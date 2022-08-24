@@ -7,10 +7,15 @@ type Session struct {
 	Data SessionData
 }
 
+type SessionCallbacks struct {
+	SendGameStartMessage func(*SessionData)
+}
+
 type SessionData struct {
 	// required
-	Name      string `json:"name"`
-	ChannelID string `json:"channelID"`
+	Name      string           `json:"name"`
+	ChannelID string           `json:"channelID"`
+	Callbacks SessionCallbacks `json:"-"`
 
 	// optional
 	DayNumber int    `json:"dayNumber"`
