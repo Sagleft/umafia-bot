@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bot/game"
 	"os"
 
 	swissknife "github.com/Sagleft/swiss-knife"
@@ -19,13 +20,7 @@ type bot struct {
 }
 
 // channel ID -> session
-type gameSessions map[string]*gameSession
-
-type gameSession struct {
-	ChannelID string
-	DayNumber int
-	//LangCode  string
-}
+type gameSessions map[string]*game.Session
 
 type botWorker struct {
 	R *rate.RateLimiter

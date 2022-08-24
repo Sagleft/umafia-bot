@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bot/game"
 	"fmt"
 	"log"
 	"reflect"
@@ -38,10 +39,10 @@ func (b *bot) onChannelMessage(m utopiago.ChannelMessage) {
 }
 
 func (b *bot) startNewGameSession(channelID string) {
-	b.Sessions[channelID] = &gameSession{
+	b.Sessions[channelID] = game.NewSession(game.SessionData{
 		ChannelID: channelID,
-		DayNumber: 1,
-	}
+	})
+	b.Sessions[channelID].Start()
 }
 
 // when someone sends a message in a chat private room section
