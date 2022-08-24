@@ -7,6 +7,8 @@ const (
 	dataProviderConnectTimeout    = 5 * time.Second
 	sendChatMessagesBufferSize    = 200
 	limitBotChatOneMessageTimeout = time.Millisecond * 1100
+
+	botStartedMessage = "Бот запущен\n[spy]"
 )
 
 var (

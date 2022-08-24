@@ -16,6 +16,7 @@ func main() {
 		b.parseConfig,
 		b.utopiaConnect,
 		b.initChannelWorkers,
+		b.notifyChats,
 	)
 	if err != nil {
 		log.Fatalln(err)
@@ -69,5 +70,12 @@ type chatMessage struct {
 func (b *bot) initChannelWorkers() error {
 	b.Workers.ChatWorker = swissknife.NewChannelWorker(b.sendChatMessageFromQueue, sendChatMessagesBufferSize)
 	b.Workers.ChatMessagesLimiter = rate.New(1, limitBotChatOneMessageTimeout)
+	return nil
+}
+
+func (b *bot) notifyChats() error {
+	for _, chat := range b.Config.Chats {
+		b.sendChatMessage(chat.ID, botStartedMessage)
+	}
 	return nil
 }
