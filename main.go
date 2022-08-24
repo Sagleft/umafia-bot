@@ -3,14 +3,11 @@ package main
 import (
 	"fmt"
 	"log"
-	"time"
+	"reflect"
 
+	swissknife "github.com/Sagleft/swiss-knife"
 	"github.com/Sagleft/uchatbot-engine"
-)
-
-const (
-	configJSONPath             = "config.json"
-	dataProviderConnectTimeout = 5 * time.Second
+	"github.com/beefsack/go-rate"
 )
 
 func main() {
@@ -19,6 +16,7 @@ func main() {
 	err := checkErrors(
 		app.parseConfig,
 		app.initBot,
+		app.initChannelWorkers,
 	)
 	if err != nil {
 		log.Fatalln(err)
@@ -60,4 +58,33 @@ func (app *solution) initBot() error {
 
 func (app *solution) onError(err error) {
 	log.Println(err)
+}
+
+type chatMessage struct {
+	Text      string
+	ChannelID string
+}
+
+func (app *solution) initChannelWorkers() error {
+	app.Workers.ChatWorker = swissknife.NewChannelWorker(app.sendChatMessage, sendChatMessagesBufferSize)
+	app.Workers.ChatMessagesLimiter = rate.New(1, limitBotChatOneMessageTimeout)
+	return nil
+}
+
+func (app *solution) sendChatMessage(event interface{}) {
+	// get message
+	message, isConvertable := event.(chatMessage)
+	if !isConvertable {
+		log.Println("invalid event received in channel worker: " + reflect.TypeOf(event).String())
+		return
+	}
+
+	// sync messages rate
+	app.Workers.ChatMessagesLimiter.Wait()
+
+	// send channel message
+	_, err := app.Config.Utopia.SendChannelMessage(message.ChannelID, message.Text)
+	if err != nil {
+		log.Println(err)
+	}
 }
