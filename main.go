@@ -17,6 +17,7 @@ func main() {
 		b.parseConfig,
 		b.utopiaConnect,
 		b.initChannelWorkers,
+		b.removeBotMessages,
 		b.notifyStarted,
 	)
 	if err != nil {
@@ -87,7 +88,7 @@ func (b *bot) initChannelWorkers() error {
 	})
 	b.Workers.RemoveMessages = b.getChannelWorker(getChannelWorkerTask{
 		RateLimit:  limitChatMessageDeleteTimeout,
-		Callback:   b.sendChatMessageFromQueue,
+		Callback:   b.removeChatMessageFromQueue,
 		BufferSize: deleteMessagesBufferSize,
 	})
 	return nil
