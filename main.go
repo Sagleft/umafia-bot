@@ -17,7 +17,7 @@ func main() {
 		b.parseConfig,
 		b.utopiaConnect,
 		b.initChannelWorkers,
-		b.removeBotMessages,
+		//b.removeBotMessages,
 		b.notifyStarted,
 	)
 	if err != nil {

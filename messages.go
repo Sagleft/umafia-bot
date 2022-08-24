@@ -11,6 +11,7 @@ import (
 	utopiago "github.com/Sagleft/utopialib-go"
 )
 
+// remove bot old messages
 func (b *bot) removeBotMessages() error {
 	for _, chat := range b.Config.Chats {
 		messages, err := b.Config.Utopia.GetChannelMessages(chat.ID, 0, maxMessagesInOneDelete)
@@ -18,7 +19,10 @@ func (b *bot) removeBotMessages() error {
 			return err
 		}
 		for i := 0; i < len(messages); i++ {
-			b.removeChatMessage(chat.ID, messages[i].ID)
+			msg := messages[i]
+			if msg.Text == botStartedMessage || msg.Text == botStoppedMesssage {
+				b.removeChatMessage(chat.ID, msg.ID)
+			}
 		}
 	}
 	return nil

@@ -9,7 +9,7 @@ const (
 	sendChatMessagesBufferSize    = 200
 	deleteMessagesBufferSize      = 100
 	limitBotChatOneMessageTimeout = time.Millisecond * 1100
-	limitChatMessageDeleteTimeout = time.Millisecond * 150
+	limitChatMessageDeleteTimeout = time.Millisecond * 1100
 	maxMessagesInOneDelete        = 15
 	dayDiscussionTime             = time.Second * 15
 
