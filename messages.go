@@ -19,5 +19,5 @@ func (app *solution) onChannelMessage(m utopiago.ChannelMessage) {
 }
 
 func (app *solution) onPrivateChannelMessage(m utopiago.ChannelMessage) {
-	fmt.Println("[PRIVATE] " + m.Nick + ": " + m.Text) // placeholder
+	// TODO
 }
