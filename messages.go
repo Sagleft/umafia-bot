@@ -8,6 +8,7 @@ import (
 	utopiago "github.com/Sagleft/utopialib-go"
 )
 
+// when a user in the personal contacts list sent a message
 func (b *bot) onContactMessage(m utopiago.InstantMessage) {
 	fmt.Println("[spy]")
 }
@@ -17,6 +18,7 @@ func (b *bot) isGameSessionAlreadyStarted(channelID string) bool {
 	return isFound
 }
 
+// when in one of the chats (channels) someone sent a message
 func (b *bot) onChannelMessage(m utopiago.ChannelMessage) {
 	if m.Text == "" {
 		return
@@ -40,6 +42,7 @@ func (b *bot) startNewGameSession(channelID string) {
 	}
 }
 
+// when someone sends a message in a chat private room section
 func (b *bot) onPrivateChannelMessage(m utopiago.ChannelMessage) {
 	// TODO
 }
