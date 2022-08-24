@@ -8,10 +8,16 @@ import (
 )
 
 type bot struct {
-	Engine  *uchatbot.ChatBot
-	Config  config
-	Workers channelWorkers
+	Engine   *uchatbot.ChatBot
+	Config   config
+	Workers  channelWorkers
+	Sessions gameSessions
 }
+
+// channel ID -> session
+type gameSessions map[string]*gameSession
+
+type gameSession struct{}
 
 type channelWorkers struct {
 	ChatMessagesLimiter *rate.RateLimiter

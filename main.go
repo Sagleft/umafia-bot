@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"reflect"
 
 	swissknife "github.com/Sagleft/swiss-knife"
 	"github.com/Sagleft/uchatbot-engine"
@@ -15,7 +14,7 @@ func main() {
 
 	err := checkErrors(
 		b.parseConfig,
-		b.initBot,
+		b.utopiaConnect,
 		b.initChannelWorkers,
 	)
 	if err != nil {
@@ -27,7 +26,9 @@ func main() {
 }
 
 func newSolution() *bot {
-	return &bot{}
+	return &bot{
+		Sessions: make(gameSessions),
+	}
 }
 
 func (b *bot) printLaunched() {
@@ -40,7 +41,7 @@ func (b *bot) runInBackground() {
 	<-forever
 }
 
-func (b *bot) initBot() error {
+func (b *bot) utopiaConnect() error {
 	var err error
 	b.Engine, err = uchatbot.NewChatBot(uchatbot.ChatBotData{
 		Client: &b.Config.Utopia,
@@ -69,22 +70,4 @@ func (b *bot) initChannelWorkers() error {
 	b.Workers.ChatWorker = swissknife.NewChannelWorker(b.sendChatMessage, sendChatMessagesBufferSize)
 	b.Workers.ChatMessagesLimiter = rate.New(1, limitBotChatOneMessageTimeout)
 	return nil
-}
-
-func (b *bot) sendChatMessage(event interface{}) {
-	// get message
-	message, isConvertable := event.(chatMessage)
-	if !isConvertable {
-		log.Println("invalid event received in channel worker: " + reflect.TypeOf(event).String())
-		return
-	}
-
-	// sync messages rate
-	b.Workers.ChatMessagesLimiter.Wait()
-
-	// send channel message
-	_, err := b.Config.Utopia.SendChannelMessage(message.ChannelID, message.Text)
-	if err != nil {
-		log.Println(err)
-	}
 }
