@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	swissknife "github.com/Sagleft/swiss-knife"
 	"github.com/Sagleft/uchatbot-engine"
 	utopiago "github.com/Sagleft/utopialib-go"
@@ -12,6 +14,8 @@ type bot struct {
 	Config   config
 	Workers  channelWorkers
 	Sessions gameSessions
+
+	OnExit chan os.Signal
 }
 
 // channel ID -> session

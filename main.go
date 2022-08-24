@@ -3,6 +3,10 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	swissknife "github.com/Sagleft/swiss-knife"
 	"github.com/Sagleft/uchatbot-engine"
@@ -16,7 +20,7 @@ func main() {
 		b.parseConfig,
 		b.utopiaConnect,
 		b.initChannelWorkers,
-		b.notifyChats,
+		b.notifyStarted,
 	)
 	if err != nil {
 		log.Fatalln(err)
@@ -27,13 +31,29 @@ func main() {
 }
 
 func newSolution() *bot {
-	return &bot{
+	b := &bot{
 		Sessions: make(gameSessions),
+		OnExit:   make(chan os.Signal, 1),
 	}
+
+	signal.Notify(b.OnExit, os.Interrupt, syscall.SIGTERM)
+	go b.waitFinish()
+	return b
 }
 
 func (b *bot) printLaunched() {
 	fmt.Println("bot started")
+}
+
+func (b *bot) waitFinish() {
+	<-b.OnExit
+
+	fmt.Println()
+	fmt.Println("stop bot..")
+	b.notifyStopped()
+	time.Sleep(time.Second * 2)
+
+	os.Exit(1)
 }
 
 func (b *bot) runInBackground() {
@@ -70,12 +90,21 @@ type chatMessage struct {
 func (b *bot) initChannelWorkers() error {
 	b.Workers.ChatWorker = swissknife.NewChannelWorker(b.sendChatMessageFromQueue, sendChatMessagesBufferSize)
 	b.Workers.ChatMessagesLimiter = rate.New(1, limitBotChatOneMessageTimeout)
+	go b.Workers.ChatWorker.Start()
 	return nil
 }
 
-func (b *bot) notifyChats() error {
-	for _, chat := range b.Config.Chats {
-		b.sendChatMessage(chat.ID, botStartedMessage)
-	}
+func (b *bot) notifyStarted() error {
+	b.notifyChats(botStartedMessage)
 	return nil
+}
+
+func (b *bot) notifyStopped() {
+	b.notifyChats(botStoppedMesssage)
+}
+
+func (b *bot) notifyChats(message string) {
+	for _, chat := range b.Config.Chats {
+		b.sendChatMessage(chat.ID, message)
+	}
 }
