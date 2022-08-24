@@ -40,6 +40,7 @@ func (b *bot) onChannelMessage(m utopiago.ChannelMessage) {
 func (b *bot) startNewGameSession(channelID string) {
 	b.Sessions[channelID] = &gameSession{
 		ChannelID: channelID,
+		DayNumber: 1,
 	}
 }
 

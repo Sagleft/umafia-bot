@@ -23,6 +23,7 @@ type gameSessions map[string]*gameSession
 
 type gameSession struct {
 	ChannelID string
+	DayNumber int
 	//LangCode  string
 }
 
