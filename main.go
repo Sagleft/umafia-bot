@@ -8,9 +8,7 @@ import (
 	"syscall"
 	"time"
 
-	swissknife "github.com/Sagleft/swiss-knife"
 	"github.com/Sagleft/uchatbot-engine"
-	"github.com/beefsack/go-rate"
 )
 
 func main() {
@@ -82,15 +80,12 @@ func (b *bot) onError(err error) {
 	log.Println(err)
 }
 
-type chatMessage struct {
-	Text      string
-	ChannelID string
-}
-
 func (b *bot) initChannelWorkers() error {
-	b.Workers.ChatWorker = swissknife.NewChannelWorker(b.sendChatMessageFromQueue, sendChatMessagesBufferSize)
-	b.Workers.ChatMessagesLimiter = rate.New(1, limitBotChatOneMessageTimeout)
-	go b.Workers.ChatWorker.Start()
+	b.Workers.ChatWorker = b.getChannelWorker(getChannelWorkerTask{
+		RateLimit:  limitBotChatOneMessageTimeout,
+		Callback:   b.sendChatMessageFromQueue,
+		BufferSize: sendChatMessagesBufferSize,
+	})
 	return nil
 }
 

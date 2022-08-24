@@ -26,12 +26,21 @@ type gameSession struct {
 	//LangCode  string
 }
 
+type botWorker struct {
+	R *rate.RateLimiter
+	W *swissknife.ChannelWorker
+}
+
 type channelWorkers struct {
-	ChatMessagesLimiter *rate.RateLimiter
-	ChatWorker          *swissknife.ChannelWorker
+	ChatWorker *botWorker
 }
 
 type config struct {
 	Utopia utopiago.UtopiaClient `json:"utopia"`
 	Chats  []uchatbot.Chat       `json:"chats"`
+}
+
+type chatMessage struct {
+	Text      string
+	ChannelID string
 }

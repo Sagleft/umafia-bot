@@ -34,6 +34,7 @@ func (b *bot) onChannelMessage(m utopiago.ChannelMessage) {
 	}
 
 	// TODO
+	fmt.Println(m.Text)
 }
 
 func (b *bot) startNewGameSession(channelID string) {
@@ -49,7 +50,7 @@ func (b *bot) onPrivateChannelMessage(m utopiago.ChannelMessage) {
 
 // add message to chat queue
 func (b *bot) sendChatMessage(channelID, message string) {
-	b.Workers.ChatWorker.AddEvent(chatMessage{
+	b.Workers.ChatWorker.W.AddEvent(chatMessage{
 		Text:      message,
 		ChannelID: channelID,
 	})
@@ -64,7 +65,7 @@ func (b *bot) sendChatMessageFromQueue(event interface{}) {
 	}
 
 	// sync messages rate
-	b.Workers.ChatMessagesLimiter.Wait()
+	b.Workers.ChatWorker.R.Wait()
 
 	// send channel message
 	_, err := b.Config.Utopia.SendChannelMessage(message.ChannelID, message.Text)
