@@ -36,3 +36,8 @@ func (app *bot) parseConfig() error {
 func formatFloat(val float64, precision int) string {
 	return strconv.FormatFloat(val, 'f', precision, 32)
 }
+
+func isPlayGameCommand(m string) bool {
+	_, isFound := startGameCommands[m]
+	return isFound
+}

@@ -12,19 +12,47 @@ func (b *bot) onContactMessage(m utopiago.InstantMessage) {
 	fmt.Println("[spy]")
 }
 
+func (b *bot) isGameSessionAlreadyStarted(channelID string) bool {
+	_, isFound := b.Sessions[channelID]
+	return isFound
+}
+
 func (b *bot) onChannelMessage(m utopiago.ChannelMessage) {
 	if m.Text == "" {
+		return
+	}
+
+	if isPlayGameCommand(m.Text) {
+		if b.isGameSessionAlreadyStarted(m.ChannelID) {
+			b.sendChatMessage(m.ChannelID, "Игра уже запущена")
+			return
+		}
+		b.startNewGameSession(m.ChannelID)
 		return
 	}
 
 	// TODO
 }
 
+func (b *bot) startNewGameSession(channelID string) {
+	b.Sessions[channelID] = &gameSession{
+		ChannelID: channelID,
+	}
+}
+
 func (b *bot) onPrivateChannelMessage(m utopiago.ChannelMessage) {
 	// TODO
 }
 
-func (b *bot) sendChatMessage(event interface{}) {
+// add message to chat queue
+func (b *bot) sendChatMessage(channelID, message string) {
+	b.Workers.ChatWorker.AddEvent(chatMessage{
+		Text:      message,
+		ChannelID: channelID,
+	})
+}
+
+func (b *bot) sendChatMessageFromQueue(event interface{}) {
 	// get message
 	message, isConvertable := event.(chatMessage)
 	if !isConvertable {

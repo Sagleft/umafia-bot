@@ -17,7 +17,10 @@ type bot struct {
 // channel ID -> session
 type gameSessions map[string]*gameSession
 
-type gameSession struct{}
+type gameSession struct {
+	ChannelID string
+	//LangCode  string
+}
 
 type channelWorkers struct {
 	ChatMessagesLimiter *rate.RateLimiter

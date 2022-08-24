@@ -67,7 +67,7 @@ type chatMessage struct {
 }
 
 func (b *bot) initChannelWorkers() error {
-	b.Workers.ChatWorker = swissknife.NewChannelWorker(b.sendChatMessage, sendChatMessagesBufferSize)
+	b.Workers.ChatWorker = swissknife.NewChannelWorker(b.sendChatMessageFromQueue, sendChatMessagesBufferSize)
 	b.Workers.ChatMessagesLimiter = rate.New(1, limitBotChatOneMessageTimeout)
 	return nil
 }
