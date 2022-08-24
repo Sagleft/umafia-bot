@@ -7,7 +7,7 @@ import (
 	"github.com/beefsack/go-rate"
 )
 
-type solution struct {
+type bot struct {
 	Engine  *uchatbot.ChatBot
 	Config  config
 	Workers channelWorkers

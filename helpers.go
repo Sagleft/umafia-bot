@@ -20,7 +20,7 @@ func checkErrors(errChecks ...errorFunc) error {
 	return nil
 }
 
-func (app *solution) parseConfig() error {
+func (app *bot) parseConfig() error {
 	// parse config file
 	if _, err := os.Stat(configJSONPath); os.IsNotExist(err) {
 		return errors.New("failed to find config file")

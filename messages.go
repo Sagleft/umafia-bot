@@ -6,11 +6,11 @@ import (
 	utopiago "github.com/Sagleft/utopialib-go"
 )
 
-func (app *solution) onContactMessage(m utopiago.InstantMessage) {
+func (app *bot) onContactMessage(m utopiago.InstantMessage) {
 	fmt.Println("[spy]")
 }
 
-func (app *solution) onChannelMessage(m utopiago.ChannelMessage) {
+func (app *bot) onChannelMessage(m utopiago.ChannelMessage) {
 	if m.Text == "" {
 		return
 	}
@@ -18,6 +18,6 @@ func (app *solution) onChannelMessage(m utopiago.ChannelMessage) {
 	// TODO
 }
 
-func (app *solution) onPrivateChannelMessage(m utopiago.ChannelMessage) {
+func (app *bot) onPrivateChannelMessage(m utopiago.ChannelMessage) {
 	// TODO
 }

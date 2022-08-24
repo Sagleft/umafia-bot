@@ -11,52 +11,52 @@ import (
 )
 
 func main() {
-	app := newSolution()
+	b := newSolution()
 
 	err := checkErrors(
-		app.parseConfig,
-		app.initBot,
-		app.initChannelWorkers,
+		b.parseConfig,
+		b.initBot,
+		b.initChannelWorkers,
 	)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	app.printLaunched()
-	app.runInBackground()
+	b.printLaunched()
+	b.runInBackground()
 }
 
-func newSolution() *solution {
-	return &solution{}
+func newSolution() *bot {
+	return &bot{}
 }
 
-func (app *solution) printLaunched() {
+func (b *bot) printLaunched() {
 	fmt.Println("bot started")
 }
 
-func (app *solution) runInBackground() {
+func (b *bot) runInBackground() {
 	forever := make(chan bool)
 	// run in background
 	<-forever
 }
 
-func (app *solution) initBot() error {
+func (b *bot) initBot() error {
 	var err error
-	app.Engine, err = uchatbot.NewChatBot(uchatbot.ChatBotData{
-		Client: &app.Config.Utopia,
-		Chats:  app.Config.Chats,
+	b.Engine, err = uchatbot.NewChatBot(uchatbot.ChatBotData{
+		Client: &b.Config.Utopia,
+		Chats:  b.Config.Chats,
 		Callbacks: uchatbot.ChatBotCallbacks{
-			OnContactMessage:        app.onContactMessage,
-			OnChannelMessage:        app.onChannelMessage,
-			OnPrivateChannelMessage: app.onPrivateChannelMessage,
+			OnContactMessage:        b.onContactMessage,
+			OnChannelMessage:        b.onChannelMessage,
+			OnPrivateChannelMessage: b.onPrivateChannelMessage,
 		},
 		UseErrorCallback: true,
-		ErrorCallback:    app.onError,
+		ErrorCallback:    b.onError,
 	})
 	return err
 }
 
-func (app *solution) onError(err error) {
+func (b *bot) onError(err error) {
 	log.Println(err)
 }
 
@@ -65,13 +65,13 @@ type chatMessage struct {
 	ChannelID string
 }
 
-func (app *solution) initChannelWorkers() error {
-	app.Workers.ChatWorker = swissknife.NewChannelWorker(app.sendChatMessage, sendChatMessagesBufferSize)
-	app.Workers.ChatMessagesLimiter = rate.New(1, limitBotChatOneMessageTimeout)
+func (b *bot) initChannelWorkers() error {
+	b.Workers.ChatWorker = swissknife.NewChannelWorker(b.sendChatMessage, sendChatMessagesBufferSize)
+	b.Workers.ChatMessagesLimiter = rate.New(1, limitBotChatOneMessageTimeout)
 	return nil
 }
 
-func (app *solution) sendChatMessage(event interface{}) {
+func (b *bot) sendChatMessage(event interface{}) {
 	// get message
 	message, isConvertable := event.(chatMessage)
 	if !isConvertable {
@@ -80,10 +80,10 @@ func (app *solution) sendChatMessage(event interface{}) {
 	}
 
 	// sync messages rate
-	app.Workers.ChatMessagesLimiter.Wait()
+	b.Workers.ChatMessagesLimiter.Wait()
 
 	// send channel message
-	_, err := app.Config.Utopia.SendChannelMessage(message.ChannelID, message.Text)
+	_, err := b.Config.Utopia.SendChannelMessage(message.ChannelID, message.Text)
 	if err != nil {
 		log.Println(err)
 	}
