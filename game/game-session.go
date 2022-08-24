@@ -18,5 +18,5 @@ func NewSession(data SessionData) *Session {
 
 func (s *Session) Start() {
 	s.changeState(defaultState)
-	fmt.Println("game session started in channel " + s.Data.ChannelID)
+	fmt.Println("game session `" + s.Data.Name + "` started in channel " + s.Data.ChannelID)
 }

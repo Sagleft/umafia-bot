@@ -15,30 +15,20 @@ func (s *Session) initStates() {
 }
 
 func (s *Session) changeState(newState string) {
-	fmt.Println("change state to `" + newState + "`")
+	fmt.Println("change session `" + s.Data.Name + "` state to `" + newState + "`")
 	s.Data.LastState = newState
 	s.FSM.Change(newState)
 }
 
-func (s *Session) onInit() {
-	fmt.Println("on init")
-}
+func (s *Session) onInit() {}
 
-func (s *Session) onDay() {
+func (s *Session) onDay() {}
 
-}
+func (s *Session) onVote() {}
 
-func (s *Session) onVote() {
+func (s *Session) onNight() {}
 
-}
-
-func (s *Session) onNight() {
-
-}
-
-func (s *Session) onFinish() {
-
-}
+func (s *Session) onFinish() {}
 
 func (s *Session) goToInit() {
 	s.changeState(stateInit)
