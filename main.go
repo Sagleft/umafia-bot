@@ -12,8 +12,7 @@ import (
 )
 
 func main() {
-	b := newSolution()
-
+	b := newBot()
 	err := checkErrors(
 		b.parseConfig,
 		b.utopiaConnect,
@@ -28,7 +27,7 @@ func main() {
 	b.runInBackground()
 }
 
-func newSolution() *bot {
+func newBot() *bot {
 	b := &bot{
 		Sessions: make(gameSessions),
 		OnExit:   make(chan os.Signal, 1),
