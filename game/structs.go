@@ -5,10 +5,16 @@ import "github.com/SolarLune/gofsm"
 type Session struct {
 	FSM  *gofsm.FSM
 	Data SessionData
+
+	PlayersCount int
+	Players      playersMap
 }
 
+type playersMap map[string]struct{}
+
 type SessionCallbacks struct {
-	SendGameStartMessage func(*SessionData)
+	SendNarratorMessage func(*SessionData, string)
+	RemoveSession       func(channelID string)
 }
 
 type SessionData struct {

@@ -44,8 +44,10 @@ func (b *bot) onChannelMessage(m utopiago.WsChannelMessage) {
 		return
 	}
 
+	isSessionStartedInChannel := b.isGameSessionAlreadyStarted(m.ChannelID)
+
 	if isPlayGameCommand(m.Text) {
-		if b.isGameSessionAlreadyStarted(m.ChannelID) {
+		if isSessionStartedInChannel {
 			b.sendChatMessage(m.ChannelID, "Игра уже запущена")
 			return
 		}
@@ -53,8 +55,17 @@ func (b *bot) onChannelMessage(m utopiago.WsChannelMessage) {
 		return
 	}
 
-	// TODO
-	fmt.Println(m.Text)
+	if isSessionStartedInChannel {
+		b.routeGameSessionMessage(m.ChannelID, m)
+	}
+}
+
+func (b *bot) routeGameSessionMessage(channelID string, m utopiago.WsChannelMessage) {
+	b.Sessions[channelID].HandleMessage(game.HandleMessageTask{
+		Text:             m.Text,
+		PlayerPubkeyHash: m.PubkeyHash,
+		PlayerNickname:   m.Nick,
+	})
 }
 
 // when someone sends a message in a chat private room section
@@ -119,8 +130,22 @@ func (b *bot) startNewGameSession(channelID string) {
 		Name:      strings.ToUpper(swissknife.GetRandomString(gameSessionNameLength)),
 		ChannelID: channelID,
 		Callbacks: game.SessionCallbacks{
-			SendGameStartMessage: b.onGameSessionStarted,
+			SendNarratorMessage: b.sendNarratorMessage,
+			RemoveSession:       b.removeSession,
 		},
 	})
 	b.Sessions[channelID].Start()
+}
+
+func (b *bot) sendNarratorMessage(s *game.SessionData, message string) {
+	b.sendChatMessage(s.ChannelID, message)
+}
+
+func (b *bot) removeSession(channelID string) {
+	if !b.isGameSessionAlreadyStarted(channelID) {
+		return
+	}
+
+	log.Println("remove session from channel " + channelID)
+	delete(b.Sessions, channelID)
 }

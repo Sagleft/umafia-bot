@@ -2,16 +2,18 @@ package game
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/SolarLune/gofsm"
 )
 
 func (s *Session) initStates() {
 	s.FSM.Register(stateInit, gofsm.State{Enter: s.onEnterInit, Update: s.onInit})
-	s.FSM.Register(stateDay, gofsm.State{Update: s.onDay})
-	s.FSM.Register(stateNight, gofsm.State{Update: s.onNight})
-	s.FSM.Register(stateVote, gofsm.State{Update: s.onVote})
-	s.FSM.Register(stateFinish, gofsm.State{Update: s.onFinish})
+	s.FSM.Register(stateDay, gofsm.State{Enter: s.onEnterDay, Update: s.onDay})
+	s.FSM.Register(stateNight, gofsm.State{Enter: s.onEnterNight, Update: s.onNight})
+	s.FSM.Register(stateVote, gofsm.State{Enter: s.onEnterVote, Update: s.onVote})
+	s.FSM.Register(stateFinish, gofsm.State{Enter: s.onEnterFinish, Update: s.onFinish})
+	s.FSM.Register(stateClear, gofsm.State{Enter: s.onEnterClear, Update: s.onClear})
 }
 
 func (s *Session) changeState(newState string) {
@@ -24,12 +26,27 @@ func (s *Session) onEnterInit() {
 	s.FSM.Update()
 }
 
+func (s *Session) narrator(message string) {
+	s.Data.Callbacks.SendNarratorMessage(&s.Data, message)
+}
+
 func (s *Session) onInit() {
-	s.Data.Callbacks.SendGameStartMessage(&s.Data)
+	s.narrator("Начинаем голосование на запуск игры.\n" +
+		"Минимальное число игроков: " + strconv.Itoa(minPlayersCount) + ".\n" +
+		"Жду " + strconv.Itoa(int(startGameVoteDuration.Seconds())) + " секунд")
+
+	minPlayersFound := s.awaitStartVote()
+	if !minPlayersFound {
+		s.goToClear()
+		return
+	}
+
+	s.onEnterDay()
 }
 
 func (s *Session) onEnterDay() {
-	s.FSM.Update()
+	defer s.FSM.Update()
+	s.narrator("ИГРА НАЧАЛАСЬ\n\nНаступил день")
 }
 
 func (s *Session) onDay() {}
@@ -52,6 +69,14 @@ func (s *Session) onEnterFinish() {
 
 func (s *Session) onFinish() {}
 
+func (s *Session) onEnterClear() {
+	s.FSM.Update()
+}
+
+func (s *Session) onClear() {
+	s.Data.Callbacks.RemoveSession(s.Data.ChannelID)
+}
+
 func (s *Session) goToInit() {
 	s.changeState(stateInit)
 }
@@ -70,4 +95,8 @@ func (s *Session) goToNight() {
 
 func (s *Session) goToFinish() {
 	s.changeState(stateFinish)
+}
+
+func (s *Session) goToClear() {
+	s.changeState(stateClear)
 }

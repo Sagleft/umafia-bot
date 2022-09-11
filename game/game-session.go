@@ -8,8 +8,9 @@ import (
 
 func NewSession(data SessionData) *Session {
 	s := &Session{
-		FSM:  gofsm.NewFSM(),
-		Data: data,
+		FSM:     gofsm.NewFSM(),
+		Data:    data,
+		Players: make(playersMap),
 	}
 
 	s.initStates()
@@ -19,4 +20,22 @@ func NewSession(data SessionData) *Session {
 func (s *Session) Start() {
 	s.changeState(defaultState)
 	fmt.Println("game session `" + s.Data.Name + "` started in channel " + s.Data.ChannelID)
+}
+
+type HandleMessageTask struct {
+	Text             string
+	PlayerPubkeyHash string
+	PlayerNickname   string
+}
+
+func (s *Session) HandleMessage(m HandleMessageTask) {
+	switch s.FSM.State {
+	case stateInit:
+		s.routeInitMessage(m)
+		return
+	}
+}
+
+func (s *Session) routeInitMessage(m HandleMessageTask) {
+
 }
