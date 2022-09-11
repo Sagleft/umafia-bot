@@ -18,8 +18,8 @@ func NewSession(data SessionData) *Session {
 }
 
 func (s *Session) Start() {
-	s.changeState(defaultState)
 	fmt.Println("game session `" + s.Data.Name + "` started in channel " + s.Data.ChannelID)
+	s.changeState(defaultState)
 }
 
 type HandleMessageTask struct {
