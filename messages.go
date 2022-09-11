@@ -12,7 +12,7 @@ import (
 )
 
 // remove bot old messages
-func (b *bot) removeBotMessages() error {
+/*func (b *bot) removeBotMessages() error {
 	for _, chat := range b.Config.Chats {
 		messages, err := b.Config.Utopia.GetChannelMessages(chat.ID, 0, maxMessagesInOneDelete)
 		if err != nil {
@@ -26,7 +26,7 @@ func (b *bot) removeBotMessages() error {
 		}
 	}
 	return nil
-}
+}*/
 
 // when a user in the personal contacts list sent a message
 func (b *bot) onContactMessage(m utopiago.InstantMessage) {
@@ -100,12 +100,12 @@ func (b *bot) sendChatMessageFromQueue(event interface{}) {
 }
 
 // add message to delete queue
-func (b *bot) removeChatMessage(channelID string, messageID int64) {
+/*func (b *bot) removeChatMessage(channelID string, messageID int64) {
 	b.Workers.RemoveMessages.W.AddEvent(removeChatMessageTask{
 		ChannelID: channelID,
 		MessageID: messageID,
 	})
-}
+}*/
 
 func (b *bot) removeChatMessageFromQueue(event interface{}) {
 	// get message

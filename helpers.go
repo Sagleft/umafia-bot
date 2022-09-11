@@ -5,7 +5,6 @@ import (
 	"errors"
 	"io/ioutil"
 	"os"
-	"strconv"
 	"time"
 
 	swissknife "github.com/Sagleft/swiss-knife"
@@ -37,9 +36,9 @@ func (app *bot) parseConfig() error {
 	return json.Unmarshal(jsonBytes, &app.Config)
 }
 
-func formatFloat(val float64, precision int) string {
+/*func formatFloat(val float64, precision int) string {
 	return strconv.FormatFloat(val, 'f', precision, 32)
-}
+}*/
 
 func isPlayGameCommand(m string) bool {
 	_, isFound := startGameCommands[m]
