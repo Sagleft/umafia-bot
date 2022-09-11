@@ -23,20 +23,6 @@ func (s *Session) Start() {
 	s.changeState(defaultState)
 }
 
-type HandleMessageTask struct {
-	Text             string
-	PlayerPubkeyHash string
-	PlayerNickname   string
-}
-
-func (s *Session) HandleMessage(m HandleMessageTask) {
-	switch s.FSM.State {
-	case stateInit:
-		s.routeInitMessage(m)
-		return
-	}
-}
-
 func (s *Session) isPlayerJoined(playerPubkeyHash string) bool {
 	_, isJoined := s.Players[playerHash(playerPubkeyHash)]
 	return isJoined
@@ -49,18 +35,4 @@ func (s *Session) getPlayersCount() int {
 func (s *Session) addPlayer(d playerData) {
 	log.Println("add player " + d.Nick + " to game in " + s.Data.ChannelID)
 	s.Players[d.Hash] = &d
-}
-
-func (s *Session) routeInitMessage(m HandleMessageTask) {
-	if m.Text == "+" {
-		if s.isPlayerJoined(m.PlayerPubkeyHash) {
-			return // ignore join message duplicate
-		}
-
-		// add player
-		s.addPlayer(playerData{
-			Nick: m.PlayerNickname,
-			Hash: playerHash(m.PlayerPubkeyHash),
-		})
-	}
 }
