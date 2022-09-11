@@ -7,13 +7,18 @@ package game
 */
 
 type actorBase struct {
-	Type         string
+	RoleType     string
+	RoleName     string
 	PlayerInGame bool
 	PlayerSleep  bool
 }
 
 func (a *actorBase) GetType() string {
-	return a.Type
+	return a.RoleType
+}
+
+func (a *actorBase) GetRoleName() string {
+	return a.RoleName
 }
 
 func (a *actorBase) InGame() bool {
@@ -25,13 +30,14 @@ func (a *actorBase) IsSleep() bool {
 }
 
 type actor interface {
+	GetRoleName() string
 	GetType() string
 	InGame() bool
 	IsSleep() bool
 
-	Kill()
-	Cure()
-	Check()
+	//Kill()
+	//Cure()
+	//Check()
 }
 
 /*
@@ -54,4 +60,44 @@ type Civilian struct {
 
 type Commissar struct {
 	actorBase
+}
+
+func newMafiaPlayer() *Mafia {
+	return &Mafia{
+		actorBase: actorBase{
+			RoleType:     "mafia",
+			RoleName:     "мафиози",
+			PlayerInGame: true,
+		},
+	}
+}
+
+func newDoctorPlayer() *Doctor {
+	return &Doctor{
+		actorBase: actorBase{
+			RoleType:     "doctor",
+			RoleName:     "доктор",
+			PlayerInGame: true,
+		},
+	}
+}
+
+func newCivilianPlayer() *Civilian {
+	return &Civilian{
+		actorBase: actorBase{
+			RoleType:     "civilian",
+			RoleName:     "мирный",
+			PlayerInGame: true,
+		},
+	}
+}
+
+func newCommissarPlayer() *Commissar {
+	return &Commissar{
+		actorBase: actorBase{
+			RoleType:     "commissar",
+			RoleName:     "комиссар",
+			PlayerInGame: true,
+		},
+	}
 }

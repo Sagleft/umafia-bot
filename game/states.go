@@ -63,8 +63,14 @@ func (s *Session) onDay() {
 }
 
 func (s *Session) getRoles(playersCount int) []actor {
-	// TODO
-	return make([]actor, playersCount)
+	roles := []actor{}
+	for i := 0; i < playersCount; i++ {
+		roles = append(roles, newCivilianPlayer())
+	}
+
+	// TODO: задать роли из соотношений на основе числа игроков
+
+	return roles
 }
 
 func (s *Session) setPlayerRoles() {
@@ -73,8 +79,14 @@ func (s *Session) setPlayerRoles() {
 	// assign roles to players
 	var i int = 0
 	for _, player := range s.Players {
+
+		// assign role
 		player.Actor = roles[i]
 		i++
+
+		// notify player about his role
+		// TODO: combine with mafia notify
+		s.informPlayer(player.Hash, "Твоя роль: "+player.Actor.GetRoleName())
 	}
 }
 

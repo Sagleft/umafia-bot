@@ -8,10 +8,10 @@ func (s *Session) narrator(message string) {
 }
 
 // inform player in channel private room
-func (s *Session) informPlayer(playerHash string, message string) {
+func (s *Session) informPlayer(hash playerHash, message string) {
 	s.Data.Callbacks.SendPlayerPrivateMessage(SendPlayerMessageTask{
 		ChannelID:        s.Data.ChannelID,
-		PlayerPubkeyHash: playerHash,
+		PlayerPubkeyHash: string(hash),
 		Message:          message,
 	})
 }
