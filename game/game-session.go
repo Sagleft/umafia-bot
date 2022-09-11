@@ -23,8 +23,8 @@ func (s *Session) Start() {
 	s.changeState(defaultState)
 }
 
-func (s *Session) isPlayerJoined(playerPubkeyHash string) bool {
-	_, isJoined := s.Players[playerHash(playerPubkeyHash)]
+func (s *Session) isPlayerJoined(playerPubkeyHash playerHash) bool {
+	_, isJoined := s.Players[playerPubkeyHash]
 	return isJoined
 }
 

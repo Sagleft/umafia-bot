@@ -86,7 +86,8 @@ func (s *Session) setPlayerRoles() {
 
 		// notify player about his role
 		// TODO: combine with mafia notify
-		s.informPlayer(player.Hash, "Твоя роль: "+player.Actor.GetRoleName())
+		msg := "Твоя роль: " + player.Actor.GetRoleName() + "\n\n" + player.Actor.GetAboutMessage()
+		s.informPlayer(player.Hash, msg)
 	}
 }
 

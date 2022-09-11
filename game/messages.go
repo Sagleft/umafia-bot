@@ -18,7 +18,7 @@ func (s *Session) informPlayer(hash playerHash, message string) {
 
 type HandleMessageTask struct {
 	Text             string
-	PlayerPubkeyHash string
+	PlayerPubkeyHash playerHash
 	PlayerNickname   string
 }
 
@@ -27,9 +27,13 @@ func (s *Session) HandleMessage(m HandleMessageTask) {
 	case stateInit:
 		s.routeInitMessage(m)
 		return
+	case stateNight:
+		s.routeNightMessage(m)
+		return
 	}
 }
 
+// INIT
 func (s *Session) routeInitMessage(m HandleMessageTask) {
 	if m.Text == "+" {
 		if s.isPlayerJoined(m.PlayerPubkeyHash) {
@@ -41,5 +45,19 @@ func (s *Session) routeInitMessage(m HandleMessageTask) {
 			Nick: m.PlayerNickname,
 			Hash: playerHash(m.PlayerPubkeyHash),
 		})
+	}
+}
+
+// NIGHT
+func (s *Session) routeNightMessage(m HandleMessageTask) {
+	player := s.getPlayer(m.PlayerPubkeyHash)
+	if player == nil {
+		// user not found in game session
+		return
+	}
+
+	if !player.Actor.InGame() {
+		s.informPlayer(player.Hash, "Ты выбыл(а).\nПодожди до следующей игры")
+		return
 	}
 }
