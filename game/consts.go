@@ -14,4 +14,7 @@ const (
 
 	startGameVoteDuration = time.Second * 30
 	minPlayersCount       = 4
+	dayTalkDuration       = time.Second * 5
+	voteDuration          = time.Second * 20
+	nightDuration         = time.Second * 30
 )

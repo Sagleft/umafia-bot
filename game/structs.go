@@ -8,16 +8,31 @@ type Session struct {
 	Players playersMap
 }
 
+type playerHash string
+
 type playerData struct {
-	Nick string
-	Hash string // pubkey hash
+	Nick  string
+	Hash  playerHash // pubkey hash
+	Actor actor
 }
 
-type playersMap map[string]playerData
+type playersMap map[playerHash]*playerData
+
+type SendNarratorMessageTask struct {
+	ChannelID string
+	Message   string
+}
+
+type SendPlayerMessageTask struct {
+	ChannelID        string
+	PlayerPubkeyHash string
+	Message          string
+}
 
 type SessionCallbacks struct {
-	SendNarratorMessage func(*SessionData, string)
-	RemoveSession       func(channelID string)
+	SendNarratorMessage      func(SendNarratorMessageTask)
+	SendPlayerPrivateMessage func(SendPlayerMessageTask)
+	RemoveSession            func(channelID string)
 }
 
 type SessionData struct {

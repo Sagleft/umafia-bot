@@ -86,6 +86,11 @@ func (b *bot) initChannelWorkers() error {
 		Callback:   b.sendChatMessageFromQueue,
 		BufferSize: sendChatMessagesBufferSize,
 	})
+	b.Workers.PrivateChat = b.getChannelWorker(getChannelWorkerTask{
+		RateLimit:  limitBotContactMessageTimeout,
+		Callback:   b.sendPrivateChatMessageFromQueue,
+		BufferSize: sendPrivateChatMessagesBufferSize,
+	})
 	b.Workers.RemoveMessages = b.getChannelWorker(getChannelWorkerTask{
 		RateLimit:  limitChatMessageDeleteTimeout,
 		Callback:   b.removeChatMessageFromQueue,

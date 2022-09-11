@@ -38,7 +38,7 @@ func (s *Session) HandleMessage(m HandleMessageTask) {
 }
 
 func (s *Session) isPlayerJoined(playerPubkeyHash string) bool {
-	_, isJoined := s.Players[playerPubkeyHash]
+	_, isJoined := s.Players[playerHash(playerPubkeyHash)]
 	return isJoined
 }
 
@@ -48,7 +48,7 @@ func (s *Session) getPlayersCount() int {
 
 func (s *Session) addPlayer(d playerData) {
 	log.Println("add player " + d.Nick + " to game in " + s.Data.ChannelID)
-	s.Players[d.Hash] = d
+	s.Players[d.Hash] = &d
 }
 
 func (s *Session) routeInitMessage(m HandleMessageTask) {
@@ -60,7 +60,7 @@ func (s *Session) routeInitMessage(m HandleMessageTask) {
 		// add player
 		s.addPlayer(playerData{
 			Nick: m.PlayerNickname,
-			Hash: m.PlayerPubkeyHash,
+			Hash: playerHash(m.PlayerPubkeyHash),
 		})
 	}
 }

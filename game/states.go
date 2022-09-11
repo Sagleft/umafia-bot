@@ -3,6 +3,7 @@ package game
 import (
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/SolarLune/gofsm"
 )
@@ -26,10 +27,6 @@ func (s *Session) onEnterInit() {
 	s.FSM.Update()
 }
 
-func (s *Session) narrator(message string) {
-	s.Data.Callbacks.SendNarratorMessage(&s.Data, message)
-}
-
 func (s *Session) onInit() {
 	s.narrator("Начинаем голосование на запуск игры.\n" +
 		"Минимальное число игроков: " + strconv.Itoa(minPlayersCount) + ".\n" +
@@ -42,33 +39,80 @@ func (s *Session) onInit() {
 		return
 	}
 
-	s.onEnterDay()
+	s.narrator("ИГРА НАЧАЛАСЬ\n\nРоли разосланы в приватные сообщения, прочти, чтобы узнать свою роль")
+	s.goToDay()
 }
 
 func (s *Session) onEnterDay() {
 	defer s.FSM.Update()
-	s.narrator("ИГРА НАЧАЛАСЬ\n\nНаступил день")
+	s.narrator("Город просыпается")
 }
 
-func (s *Session) onDay() {}
+func (s *Session) onDay() {
+	if s.isItFirstDay() {
+		s.setPlayerRoles()
+		s.goToNight()
+		return
+	}
+
+	// TODO: подведение итогов ночи
+
+	time.Sleep(dayTalkDuration)
+
+	s.goToVote()
+}
+
+func (s *Session) getRoles(playersCount int) []actor {
+	// TODO
+	return make([]actor, playersCount)
+}
+
+func (s *Session) setPlayerRoles() {
+	roles := s.getRoles(len(s.Players))
+
+	// assign roles to players
+	var i int = 0
+	for _, player := range s.Players {
+		player.Actor = roles[i]
+		i++
+	}
+}
 
 func (s *Session) onEnterVote() {
-	s.FSM.Update()
+	defer s.FSM.Update()
+	s.narrator("Начинаем голосование")
 }
 
-func (s *Session) onVote() {}
+func (s *Session) onVote() {
+	time.Sleep(voteDuration)
+
+	// TODO: определение голосов
+
+	s.goToNight()
+}
 
 func (s *Session) onEnterNight() {
-	s.FSM.Update()
+	defer s.FSM.Update()
+
+	s.narrator("Наступила ночь. Город засыпает")
 }
 
-func (s *Session) onNight() {}
+func (s *Session) onNight() {
+	// TODO: разные типы игроков делают свой выбор
+
+	time.Sleep(nightDuration)
+
+	s.goToDay()
+}
 
 func (s *Session) onEnterFinish() {
-	s.FSM.Update()
+	defer s.FSM.Update()
+	s.narrator("Игра завершена")
 }
 
-func (s *Session) onFinish() {}
+func (s *Session) onFinish() {
+	s.goToClear()
+}
 
 func (s *Session) onEnterClear() {
 	s.FSM.Update()
@@ -78,8 +122,8 @@ func (s *Session) onClear() {
 	s.Data.Callbacks.RemoveSession(s.Data.ChannelID)
 }
 
-func (s *Session) goToInit() {
-	s.changeState(stateInit)
+func (s *Session) goToNight() {
+	s.changeState(stateNight)
 }
 
 func (s *Session) goToDay() {
@@ -88,10 +132,6 @@ func (s *Session) goToDay() {
 
 func (s *Session) goToVote() {
 	s.changeState(stateVote)
-}
-
-func (s *Session) goToNight() {
-	s.changeState(stateNight)
 }
 
 func (s *Session) goToFinish() {

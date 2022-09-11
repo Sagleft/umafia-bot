@@ -29,12 +29,19 @@ type botWorker struct {
 
 type channelWorkers struct {
 	Chat           *botWorker
+	PrivateChat    *botWorker
 	RemoveMessages *botWorker
 }
 
 type config struct {
 	Utopia utopiago.UtopiaClient `json:"utopia"`
 	Chats  []uchatbot.Chat       `json:"chats"`
+}
+
+type privateChatMessageTask struct {
+	Text              string
+	ContactPubkeyHash string
+	ChannelID         string
 }
 
 type postChatMessageTask struct {

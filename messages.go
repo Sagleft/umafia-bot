@@ -81,6 +81,37 @@ func (b *bot) sendChatMessage(channelID, message string) {
 	})
 }
 
+// add message to private chat queue
+func (b *bot) sendPrivateMessage(channelID, pubkeyHash, message string) {
+	b.Workers.Chat.W.AddEvent(privateChatMessageTask{
+		Text:              message,
+		ContactPubkeyHash: pubkeyHash,
+		ChannelID:         channelID,
+	})
+}
+
+func (b *bot) sendPrivateChatMessageFromQueue(event interface{}) {
+	// get message
+	message, isConvertable := event.(privateChatMessageTask)
+	if !isConvertable {
+		log.Println("invalid event received in channel worker: " + reflect.TypeOf(event).String())
+		return
+	}
+
+	// sync messages rate
+	b.Workers.PrivateChat.R.Wait()
+
+	// send channel message
+	_, err := b.Config.Utopia.SendChannelContactMessage(
+		message.ChannelID,
+		message.ContactPubkeyHash,
+		message.Text,
+	)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
 func (b *bot) sendChatMessageFromQueue(event interface{}) {
 	// get message
 	message, isConvertable := event.(postChatMessageTask)
@@ -130,15 +161,20 @@ func (b *bot) startNewGameSession(channelID string) {
 		Name:      strings.ToUpper(swissknife.GetRandomString(gameSessionNameLength)),
 		ChannelID: channelID,
 		Callbacks: game.SessionCallbacks{
-			SendNarratorMessage: b.sendNarratorMessage,
-			RemoveSession:       b.removeSession,
+			SendNarratorMessage:      b.sendNarratorMessage,
+			SendPlayerPrivateMessage: b.sendPlayerPrivateMessage,
+			RemoveSession:            b.removeSession,
 		},
 	})
 	b.Sessions[channelID].Start()
 }
 
-func (b *bot) sendNarratorMessage(s *game.SessionData, message string) {
-	b.sendChatMessage(s.ChannelID, message)
+func (b *bot) sendNarratorMessage(m game.SendNarratorMessageTask) {
+	b.sendChatMessage(m.ChannelID, m.Message)
+}
+
+func (b *bot) sendPlayerPrivateMessage(m game.SendPlayerMessageTask) {
+	b.sendPrivateMessage(m.ChannelID, m.PlayerPubkeyHash, m.Message)
 }
 
 func (b *bot) removeSession(channelID string) {
