@@ -2,6 +2,7 @@ package game
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/SolarLune/gofsm"
 )
@@ -36,6 +37,30 @@ func (s *Session) HandleMessage(m HandleMessageTask) {
 	}
 }
 
-func (s *Session) routeInitMessage(m HandleMessageTask) {
+func (s *Session) isPlayerJoined(playerPubkeyHash string) bool {
+	_, isJoined := s.Players[playerPubkeyHash]
+	return isJoined
+}
 
+func (s *Session) getPlayersCount() int {
+	return len(s.Players)
+}
+
+func (s *Session) addPlayer(d playerData) {
+	log.Println("add player " + d.Nick + " to game in " + s.Data.ChannelID)
+	s.Players[d.Hash] = d
+}
+
+func (s *Session) routeInitMessage(m HandleMessageTask) {
+	if m.Text == "+" {
+		if s.isPlayerJoined(m.PlayerPubkeyHash) {
+			return // ignore join message duplicate
+		}
+
+		// add player
+		s.addPlayer(playerData{
+			Nick: m.PlayerNickname,
+			Hash: m.PlayerPubkeyHash,
+		})
+	}
 }

@@ -33,7 +33,8 @@ func (s *Session) narrator(message string) {
 func (s *Session) onInit() {
 	s.narrator("Начинаем голосование на запуск игры.\n" +
 		"Минимальное число игроков: " + strconv.Itoa(minPlayersCount) + ".\n" +
-		"Жду " + strconv.Itoa(int(startGameVoteDuration.Seconds())) + " секунд")
+		"Жду " + strconv.Itoa(int(startGameVoteDuration.Seconds())) + " секунд\n\n" +
+		"Пиши + чтобы участвовать")
 
 	minPlayersFound := s.awaitStartVote()
 	if !minPlayersFound {

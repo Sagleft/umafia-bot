@@ -11,8 +11,8 @@ func (s *Session) awaitStartVote() bool {
 	time.Sleep(startGameVoteDuration)
 
 	// count votes
-	if s.PlayersCount < minPlayersCount {
-		s.narrator("Не набрано минимальное число игроков.\nОтмена старта игры")
+	if s.getPlayersCount() < minPlayersCount {
+		s.narrator("Не набрано минимальное число игроков.\nОтмена старта игры\n" + ":^|")
 		return false
 	}
 

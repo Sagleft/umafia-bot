@@ -19,9 +19,12 @@ const (
 
 var (
 	startGameCommands = map[string]struct{}{
-		"играть": {}, "начать игру": {},
-		"play": {}, "play game": {},
-		"start game": {}, "запуск": {},
-		"старт": {},
+		"играть":      {},
+		"начать игру": {},
+		"play":        {},
+		"play game":   {},
+		"start game":  {},
+		"запуск":      {},
+		"старт":       {},
 	}
 )

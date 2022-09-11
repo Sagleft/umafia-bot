@@ -3,14 +3,17 @@ package game
 import "github.com/SolarLune/gofsm"
 
 type Session struct {
-	FSM  *gofsm.FSM
-	Data SessionData
-
-	PlayersCount int
-	Players      playersMap
+	FSM     *gofsm.FSM
+	Data    SessionData
+	Players playersMap
 }
 
-type playersMap map[string]struct{}
+type playerData struct {
+	Nick string
+	Hash string // pubkey hash
+}
+
+type playersMap map[string]playerData
 
 type SessionCallbacks struct {
 	SendNarratorMessage func(*SessionData, string)
